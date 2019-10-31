@@ -1,5 +1,5 @@
-# Poop-OS
-Creating a simple OS from scratch 
+# Poop-Operating System
+Creating a simple OS from scratch. 
 
 
 ## Goal
