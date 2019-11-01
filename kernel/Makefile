@@ -17,4 +17,4 @@ mykernal.bin: linker.ld $(objects)
 	ld $(LDPARAMS) -T $< -o $@ $(objects) 
 
 install: mykernal.bin
-	sudo cp $< /boot/mykernal.bin
+	sudo cp $< /boot/mykernel.bin
