@@ -1,5 +1,5 @@
 # Simple-Operating System
-Creating a simple OS from scratch. My primary rescourse 
+Creating a simple OS from scratch. My primary resource for this project are the articles on https://wiki.osdev.org. 
 
 
 ## Goal
