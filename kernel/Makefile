@@ -5,7 +5,7 @@ LDPARAMS = -melf_i386
 
 
 
-objects = loader.o kernel.o
+objects = loader.o global_desc_table.o kernel.o
 
 %.o: %.cpp
 	g++ $(GPPPARAMS) -o $@ -c $<
@@ -18,3 +18,34 @@ mykernal.bin: linker.ld $(objects)
 
 install: mykernal.bin
 	sudo cp $< /boot/mykernel.bin
+
+
+# generate our iso file
+mykernel.iso: mykernal.bin
+	mkdir iso
+	mkdir iso/boot
+	mkdir iso/boot/grub
+	cp $< iso/boot/mykernel.bin
+
+	# manually create grub.cfg entries
+	echo 'set timeout=0' >> iso/boot/grub/grub.cfg
+	echo 'set default=0' >> iso/boot/grub/grub.cfg
+	echo '' >> iso/boot/grub/grub.cfg
+	echo 'menuentry "poopOS" {' >> iso/boot/grub/grub.cfg
+	echo '	multiboot /boot/mykernel.bin' >> iso/boot/grub/grub.cfg
+	echo '	boot' >> iso/boot/grub/grub.cfg
+	echo '}' >> iso/boot/grub/grub.cfg
+
+	#produce the iso image
+	grub-mkrescue --output=$@ iso
+
+	rm -rf iso
+
+done: 
+	(VBoxManage controlvm poopOS poweroff && sleep 1) || true
+
+
+# for testing, saves some time
+run: mykernel.iso
+	(VBoxManage controlvm poopOS poweroff && sleep 1) || true
+	VirtualBox --startvm "poopOS" &
