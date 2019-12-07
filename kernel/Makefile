@@ -5,7 +5,7 @@ LDPARAMS = -melf_i386
 
 
 
-objects = loader.o global_desc_table.o kernel.o
+objects = loader.o global_desc_table.o hw_port.o kernel.o
 
 %.o: %.cpp
 	g++ $(GPPPARAMS) -o $@ -c $<
@@ -49,3 +49,7 @@ done:
 run: mykernel.iso
 	(VBoxManage controlvm poopOS poweroff && sleep 1) || true
 	VirtualBox --startvm "poopOS" &
+
+.PHONY: clean
+clean: 
+	rm -f $(objects) mykernal.bin mykernal.iso
