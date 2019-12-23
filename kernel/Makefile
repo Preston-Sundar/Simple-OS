@@ -5,7 +5,7 @@ LDPARAMS = -melf_i386
 
 
 
-objects = loader.o global_desc_table.o kernel.o
+objects = loader.o global_desc_table.o misc.o kernel.o
 
 %.o: %.cpp
 	g++ $(GPPPARAMS) -o $@ -c $<
@@ -31,7 +31,7 @@ mykernel.iso: mykernal.bin
 	echo 'set timeout=0' >> iso/boot/grub/grub.cfg
 	echo 'set default=0' >> iso/boot/grub/grub.cfg
 	echo '' >> iso/boot/grub/grub.cfg
-	echo 'menuentry "poopOS" {' >> iso/boot/grub/grub.cfg
+	echo 'menuentry "github_version" {' >> iso/boot/grub/grub.cfg
 	echo '	multiboot /boot/mykernel.bin' >> iso/boot/grub/grub.cfg
 	echo '	boot' >> iso/boot/grub/grub.cfg
 	echo '}' >> iso/boot/grub/grub.cfg
@@ -42,13 +42,13 @@ mykernel.iso: mykernal.bin
 	rm -rf iso
 
 done: 
-	(VBoxManage controlvm poopOS poweroff && sleep 1) || true
+	(VBoxManage controlvm github_version poweroff && sleep 1) || true
 
 
 # for testing, saves some time
 run: mykernel.iso
-	(VBoxManage controlvm poopOS poweroff && sleep 1) || true
-	VirtualBox --startvm "poopOS" &
+	(VBoxManage controlvm github_version poweroff && sleep 1) || true
+	VirtualBox --startvm "github_version" &
 
 .PHONY: clean
 clean: 
