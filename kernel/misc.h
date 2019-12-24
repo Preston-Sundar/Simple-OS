@@ -18,7 +18,7 @@
 // define the positions for the messages
 #define K_STATE_X    3
 #define K_MESSAGE_X  30
-#define K_ERROR_X    67
+#define K_ERROR_X    62
 
 
 //                   0123456789012345678901234567890123   

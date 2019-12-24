@@ -32,6 +32,15 @@ extern "C" void call_constructors()
     }
 }
 
+
+void delay(){
+    for (uint64_t i = 0; i < 99999999; i++)
+    {
+        __asm__("nop");
+    }
+    
+}
+
 /*   main function of our kernal 
  *   accepts the pointer to multiboot and the magic code (no particular reason to take the magic number)
  * 
@@ -66,6 +75,32 @@ extern "C" void kernel_main(void *multiboot_structure, uint32_t magic_number)
 
 
     // kernal never really stops, inf loop
+    //uint64_t i = 0;
+
+    uint8_t flag = 0;
+
+    printf_skeleton_message("Kernel Loop ", PRINT_STATE);
+
     while (1)
-        ;
+    {
+        
+        flag = ~flag;
+
+        if (flag == 0)
+        {
+            printf_skeleton_message("Inside Inf Loop", PRINT_ERROR);        
+            printf_skeleton_message("Waiting........", PRINT_MESSAGE);     
+        } else {
+            printf_skeleton_message("Waiting........", PRINT_ERROR);
+            printf_skeleton_message("Inside Inf Loop", PRINT_MESSAGE);   
+        }
+        
+
+    
+        delay();
+    }
+
+
+
 }
+
