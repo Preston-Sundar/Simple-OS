@@ -11,6 +11,7 @@
 
 #include "types.h"
 #include "global_desc_table.h"
+#include "sys_interrupts.h"
 #include "misc.h"
 
 
@@ -42,15 +43,23 @@ extern "C" void kernel_main(void *multiboot_structure, uint32_t magic_number)
 
     // can't use the standard printf as we're outside an OS currently
     // we don't have access to glibc so we write our own printf
-    printf_boot_message("Hello, WELCOME TO PoopOS's kernel.....so what now?\n");
+    printf_boot_message("kernel.....\n");
 
+    // create the global descriptor table
     GlobalDescriptorTable gdt;
 
-    asm("sti");
+    // create the interrupt descriptor table
+    InterruptHandler interrupt_handler(&gdt);
 
+
+    // tell the cpu to use it
+    interrupt_handler.set_active();
+
+
+    // random rebug print
     printf_boot_message("sti called\n");
 
-    /* kernal never really stops, inf loop */
+    // kernal never really stops, inf loop
     while (1)
         ;
 }

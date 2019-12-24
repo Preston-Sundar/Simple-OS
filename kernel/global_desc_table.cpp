@@ -17,10 +17,10 @@ GlobalDescriptorTable::GlobalDescriptorTable() : nullSegmentSelector(0, 0, 0),
     uint32_t i[2];
 
     //first 4 bytes is address of table
-    i[0] = (uint32_t)this;
+    i[1] = (uint32_t)this;
 
     //second 4 bytes, the high bytes,  are size of global desc table
-    i[1] = sizeof(GlobalDescriptorTable) << 16;
+    i[0] = sizeof(GlobalDescriptorTable) << 16;
 
 
     // tell processor to use this table using its ldgt function
@@ -122,7 +122,7 @@ uint32_t GlobalDescriptorTable::SegmentDescriptor::Limit()
     //check if there was a shift of 12
     if (target[6] & 0xC0 == 0xC0)
     {
-        result = (result << 12) & 0xFFF;
+        result = (result << 12) | 0xFFF;
     }
     
     return result;
