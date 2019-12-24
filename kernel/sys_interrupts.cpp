@@ -89,9 +89,6 @@ InterruptHandler::InterruptHandler(GlobalDescriptorTable* global_desc_table)
     // the cpu will map interrupts to the table
     asm volatile("lidt %0" : : "m" (idt_ptr));
     
-    
-    // issue debug print
-    printf_boot_message("   2: Created Interrupt Desc Table...\n");
 }
 
 // define the destructor of the class
@@ -106,7 +103,7 @@ InterruptHandler::~InterruptHandler()
 // function to make entries in the IDT
 // takes the interrupt number as an index, the segment offset it used to specify which memory segment to use
 // a pointer to the function to call, the flags and access level.
-void InterruptHandler::create_entry(uint8_t i_number, uint16_t segment_desc_offset, void (*isr)(), uint8_t priv_lvl, uint8_t desc_type)
+void InterruptHandler::create_entry(uint8_t i_number, uint16_t segment_desc_offset, func_t isr, uint8_t priv_lvl, uint8_t desc_type)
 {
 
     // set the i_number'th entry to the given params
@@ -118,7 +115,7 @@ void InterruptHandler::create_entry(uint8_t i_number, uint16_t segment_desc_offs
     interrupt_desc_table[i_number].handler_upper_bits = (((uint32_t)isr) >> 16) & 0xFFFF;
 
     // calculate the privilage byte, setting the correct bits
-    interrupt_desc_table[i_number].priv_lvl = 0x80 | ((priv_lvl & 3) << 5) | desc_type;
+    interrupt_desc_table[i_number].priv_lvl = PRESENT_FLAG | desc_type | ((priv_lvl & 3) << 5);
 
 
     interrupt_desc_table[i_number].segment_desc_offset = segment_desc_offset;
@@ -149,8 +146,5 @@ void InterruptHandler::set_active()
     //asm volatile("cli");
     asm volatile("sti");
     
-
-    // issue debug print
-    printf_boot_message("   4: Activated sys interrupts...\n");
 }
 

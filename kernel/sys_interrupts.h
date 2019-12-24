@@ -71,7 +71,7 @@ protected:
     // function to make entries in the IDT
     // takes the interrupt number as an index, the segment offset it used to specify which memory segment to use
     // a pointer to the function to call, the flags and access level.
-    static void create_entry(uint8_t i_number, uint16_t segment_desc_offset, void (*isr)(), uint8_t priv_lvl, uint8_t flags);
+    static void create_entry(uint8_t i_number, uint16_t segment_desc_offset, func_t isr, uint8_t priv_lvl, uint8_t flags);
 
 
     struct interrupt_desc_table_pointerdata
@@ -92,12 +92,12 @@ protected:
 
     static void isr0x00(){
 
-        printf_boot_message("CALLED isr0x00");
+        printf_skeleton_message("isr0x00", PRINT_MESSAGE);
 
     };
     static void isr0x01(){
 
-        printf_boot_message("CALLED isr0x01");
+        printf("CALLED isr0x01");
 
     };
 

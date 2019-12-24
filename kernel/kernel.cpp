@@ -43,7 +43,7 @@ extern "C" void kernel_main(void *multiboot_structure, uint32_t magic_number)
 
     // can't use the standard printf as we're outside an OS currently
     // we don't have access to glibc so we write our own printf
-    printf_boot_message("kernel.....\n");
+    //printf_boot_message("kernel.....\n");
 
     // create the global descriptor table
     GlobalDescriptorTable gdt;
@@ -56,8 +56,14 @@ extern "C" void kernel_main(void *multiboot_structure, uint32_t magic_number)
     interrupt_handler.set_active();
 
 
+    // clear and set up skeleton
+    init_screen();
+
     // random rebug print
-    printf_boot_message("sti called\n");
+    // /printf_boot_message("sti called\n");
+
+    printf_skeleton_message("kernel ready", PRINT_STATE);
+
 
     // kernal never really stops, inf loop
     while (1)
