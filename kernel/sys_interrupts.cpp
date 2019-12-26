@@ -6,13 +6,19 @@
 #include "misc.h"
 
 
+
 //handle() is used to take the interrupt number, 
 //i_number, and the address to the current CPU stack frame.
-uint32_t InterruptHandler::handle(uint8_t i_number, uint32_t crnt_stkptr)
+extern "C" uint32_t InterruptHandler::handle(uint8_t i_number, uint32_t crnt_stkptr)
 {
 
-    // debug
-    printf(" INTERRUPT");
+
+    // call the non-static interrupt handler
+    if (crnt_interrupt_handler != nullptr)
+    {
+        return crnt_interrupt_handler->handle_dynamic(i_number, crnt_stkptr);
+    }
+    
 
     // after the interrupt code has been executed,
     // return the stack pointer so that the CPU can resume
@@ -25,8 +31,37 @@ uint32_t InterruptHandler::handle(uint8_t i_number, uint32_t crnt_stkptr)
 }
 
 
+
+//handle() is used to take the interrupt number, 
+//i_number, and the address to the current CPU stack frame.
+uint32_t InterruptHandler::handle_dynamic(uint8_t i_number, uint32_t crnt_stkptr)
+{
+
+
+    // debug for now
+    printf("                Inpt::handle()\n");
+
+
+
+
+
+    // after the interrupt code has been executed,
+    // return the stack pointer so that the CPU can resume
+    // where it left off.
+
+    // this works for now as we do not have multiple
+    // concurrent processes running, so there is no issue
+    // of handling the threat number.
+    return crnt_stkptr;
+}
+
+
+
+
+
 // define the global descriptor table
 InterruptHandler::_gate_descriptor InterruptHandler::interrupt_desc_table[N_ENTRIES];
+
 
 
 
@@ -88,6 +123,10 @@ InterruptHandler::InterruptHandler(GlobalDescriptorTable* global_desc_table)
     // use lidt instruction to load the table 
     // the cpu will map interrupts to the table
     asm volatile("lidt %0" : : "m" (idt_ptr));
+
+    // init the pointer to the active interrupt handler
+    // point to null until this handler is set to active
+    crnt_interrupt_handler = nullptr;
     
 }
 
@@ -142,9 +181,42 @@ void InterruptHandler::block_request()
 void InterruptHandler::set_active()
 {
 
+
+    // check if there is an existing active handler
+    if (crnt_interrupt_handler != nullptr)
+    {
+        // make the old handler inactive
+        crnt_interrupt_handler->set_inactive();
+    }
+    
+
+    // set this interrupt handler as the active handler
+    crnt_interrupt_handler = this;
+
+
     // call sti assembly to start interrup poling at the CPU level
     //asm volatile("cli");
-    asm volatile("sti");
+    __asm__("sti");
     
 }
 
+// store a pointer to an object of this class
+// at any one time there can only be one interrupt management objects
+// that is active and in use (its IDT is loaded on the CPU)
+// store the pointer to that interrupt handling object
+InterruptHandler* InterruptHandler::crnt_interrupt_handler = nullptr;
+
+void InterruptHandler::set_inactive()
+{
+
+
+
+    // check if calling on an active handler
+    if (crnt_interrupt_handler == this)
+    {
+        // deactivate
+        crnt_interrupt_handler = nullptr;
+        __asm__("cli");
+    }
+    
+}

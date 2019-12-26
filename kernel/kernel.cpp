@@ -41,52 +41,6 @@ void delay(){
     
 }
 
- //Play sound using built in speaker
- static void play_sound(uint32_t nFrequence) {
- 	uint32_t Div;
- 	uint8_t tmp;
- 
-
-    //Set the PIT to the desired frequency
- 	Div = 1193180 / nFrequence;
-
- 	//outb(0x43, 0xb6);
-
-    __asm__ volatile("outb %0, %1"
-                     :
-                     : "a"(0xb6), "Nd"(0x43));
-
-
- 	//outb(0x42, (uint8_t) (Div) );
-
-    __asm__ volatile("outb %0, %1"
-                     :
-                     : "a"((uint8_t) (Div)), "Nd"(0x42));
-
- 	//outb(0x42, (uint8_t) (Div >> 8));
- 
-
-    __asm__ volatile("outb %0, %1"
-                     :
-                     : "a"((uint8_t) (Div >> 8)), "Nd"(0x42));
-
-
-        //And play the sound using the PC speaker
-
-    __asm__ volatile("inb %1, %0"
-                     : "=a"(tmp)
-                     : "Nd"(0x61));
-
-
-  	if (tmp != (tmp | 3)) {
- 		//outb(0x61, tmp | 3);
-
-        __asm__ volatile("outb %0, %1"
-                    :
-                    : "a"(tmp | 3), "Nd"(0x61));
-
- 	}
- }
  
 //  //make it shutup
 //  static void nosound() {
@@ -138,21 +92,19 @@ extern "C" void kernel_main(void *multiboot_structure, uint32_t magic_number)
     while (1)
     {
         
-        flag = ~flag;
+        // flag = ~flag;
 
-        if (flag == 0)
-        {
-            printf_skeleton_message("Inside Inf Loop", PRINT_ERROR);        
-            printf_skeleton_message("Waiting........", PRINT_MESSAGE);     
-        } else {
-            printf_skeleton_message("Waiting........", PRINT_ERROR);
-            printf_skeleton_message("Inside Inf Loop", PRINT_MESSAGE);   
-        }
+        // if (flag == 0)
+        // {
+        //     printf_skeleton_message("Inside Inf Loop", PRINT_ERROR);        
+        //     printf_skeleton_message("Waiting........", PRINT_MESSAGE);     
+        // } else {
+        //     printf_skeleton_message("Waiting........", PRINT_ERROR);
+        //     printf_skeleton_message("Inside Inf Loop", PRINT_MESSAGE);   
+        // }
         
-        play_sound(1000);
-
     
-        delay();
+        // delay();
     }
 
 

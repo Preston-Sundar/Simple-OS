@@ -223,3 +223,12 @@ void printf_skeleton_message(char *str, uint8_t section_id)
         }
     }
 }
+
+
+
+
+extern "C" void test(){
+    printf("YOMMOAOAOS\n");
+    printf("YOMMOAOAOS\n");
+    printf("YOMMOAOAOS\n");
+}

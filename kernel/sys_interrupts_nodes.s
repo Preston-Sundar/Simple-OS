@@ -31,6 +31,7 @@
 # calls the corresponding isr
 .global _ZN16InterruptHandler26handle\i_num\()Ev
 _ZN16InterruptHandler26handle\i_num\()Ev:
+    call test
     movb $\i_num + 0x20, (i_number)
     jmp handle_interrupt
 
@@ -68,6 +69,7 @@ isr 0x01
 # define the function to handle the interrupt
 handle_interrupt:
 
+
     # first, we must store all the current registers
     # onto the stack so that we can pass control to the
     # ISR. We do this as some of the registers are callee-saved
@@ -76,7 +78,6 @@ handle_interrupt:
     
     # pushes all general purpose registers.
     pusha
-
 
     # pushes the data seg register.
     pushl %ds

@@ -92,7 +92,7 @@ protected:
 
     static void isr0x00(){
 
-        printf_skeleton_message("isr0x00", PRINT_MESSAGE);
+        printf_skeleton_message("isr0x00", PRINT_STATE);
 
     };
     static void isr0x01(){
@@ -112,6 +112,11 @@ public:
     //handle() is used to take the interrupt number, 
     //i_number, and the address to the current CPU stack frame.
     static uint32_t handle(uint8_t i_number, uint32_t crnt_stkptr);
+    
+    // same as handle(), but must be called from a non static context
+    // called by the current active interrupt handler object
+    // called from the handle() method to enter the non-static context
+    uint32_t handle_dynamic(uint8_t i_number, uint32_t crnt_stkptr);
 
 
     // function to ignore a request
@@ -119,6 +124,20 @@ public:
     
     // function to tell the CPU to send the interrupts to the table
     void set_active();
+
+    // sets the current interrupt handler to none
+    // calls cli to remove the current interrupt table in CPU
+    void set_inactive();
+
+protected: 
+
+
+    // store a pointer to an object of this class
+    // at any one time there can only be one interrupt management objects
+    // that is active and in use (its IDT is loaded on the CPU)
+    // store the pointer to that interrupt handling object
+    static InterruptHandler* crnt_interrupt_handler;
+
 
 };
 
