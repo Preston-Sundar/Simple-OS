@@ -8,13 +8,17 @@ Learn how operating systems work by implementing one. The end result should supp
 ## Implementation
 
 ### Bootloader
-I have not implemented a bootloader, and instead utilize GNU GRUB to load my kernel. 
+I have not implemented a bootloader, and instead utilize GNU GRUB to load my kernel. This ensures that I can boot from multiple sources and quickly check hard drive and optical disk boot options.
 
 ### Global Descriptor Table
 Created a simple Global Descriptor table that models the following segment:
 ![alt text](https://github.com/Preston-Sundar/Poop-OS/blob/master/readmeimages/segment-descriptor.png)
 
-Implemented in global_desc_table.cpp with functions to create new segments, retrieve the pointer to a block, check limits, and set flags.
+Implemented in `descriptor_table.cpp` with functions to create new segments, retrieve the pointer to a block, check limits, and set flags.
+
+Below is the debugger output from Bochs showing the 5 segments that were created:
+![alt text](https://github.com/Preston-Sundar/Simple-OS/blob/master/readmeimages/bochs_gdt.png)
+
 
 ### Interrupt Descriptor Table and the PIC
 The diagram below illustrates the role of the Interrupt Descriptor Table and the PIC. It acts as a mediator to allow the CPU to complete execution before servicing an interrupt, and allows for the CPU to receive interrupts from several devices in one place.
@@ -28,10 +32,11 @@ high-level descriptions for the processes occurring at each marked stage:
 ### How to use?
 To boot into the OS for testing, I use VirtualBox for a VM and grub-mkrescue to generate a bootable disk image from a given file structure.
 
-Prior to booting, initialize an emty VM within VirtualBox setting all options to 'other' and 64MB of RAM.
+Prior to booting, initialize an empty VM within VirtualBox setting all options to 'other' and 64MB of RAM, use the same name as shown below:
+![alt text](https://github.com/Preston-Sundar/Simple-OS/blob/master/readmeimages/instruction_addvm.png)
 Boot into the OS by running the following commands within the kernel direcory:
 ```console
 foo@bar:~/$ git clone https://github.com/Preston-Sundar/Simple-OS.git
 foo@bar:~/$ cd Simple-OS/kernel/
-foo@bar:~/$ make run
+foo@bar:~/$ make runvb
 ```

@@ -58,7 +58,7 @@ objects/kernel.iso: objects/kernel.elf
 	echo 'set timeout=0' >> src/kernel/iso/boot/grub/grub.cfg
 	echo 'set default=0' >> src/kernel/iso/boot/grub/grub.cfg
 	echo '' >> src/kernel/iso/boot/grub/grub.cfg
-	echo 'menuentry "simpleOS_t" {' >> src/kernel/iso/boot/grub/grub.cfg
+	echo 'menuentry "simpleOS__main" {' >> src/kernel/iso/boot/grub/grub.cfg
 	echo '	multiboot /boot/kernel.elf' >> src/kernel/iso/boot/grub/grub.cfg
 	echo '	boot' >> src/kernel/iso/boot/grub/grub.cfg
 	echo '}' >> src/kernel/iso/boot/grub/grub.cfg
@@ -69,12 +69,12 @@ objects/kernel.iso: objects/kernel.elf
 
 
 donevb: 
-	(VBoxManage controlvm simpleOS poweroff && sleep 1) || true
+	(VBoxManage controlvm simpleOS__main poweroff && sleep 1) || true
 
 # for testing, saves some time
 runvb: objects/kernel.iso
-	(VBoxManage controlvm simpleOS poweroff && sleep 1) || true
-	VirtualBox --startvm "simpleOS" &
+	(VBoxManage controlvm simpleOS__main poweroff && sleep 1) || true
+	VirtualBox --startvm "simpleOS__main" &
 
 
 .PHONY: clean
