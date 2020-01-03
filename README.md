@@ -29,6 +29,59 @@ high-level descriptions for the processes occurring at each marked stage:
 2. CPU then acknowledges the interrupt. Within the interrupt vector sent from the PIC lies the interrupt number. The CPU then maps this number to its respective interrupt handler.
 3. From the CPU's perspective, after every instruction has been executed, it checks to see if the PIC's pin has notified an interrupt. It then saves the current process onto the stack and passes control to the OS.
 4. From the OS's perspective, an Interrupt Descriptor Table is set up in advance to execution and is used to jump to the correct interrupt handler. Once complete, an 'iret' instruction is issued to the CPU to resume original state.
+
+Shown below is assembly that models the behaviour state above, taken from `interrupts.s`:
+```asm
+# create a common interrupt handler
+# saves the processor state, sets the kernel mode segments,
+# calls the C++ function, then restored the CPU state
+isr_common:
+    # first, we must store all the current registers
+    # onto the stack so that we can pass control to the
+    # ISR. We do this as some of the registers are callee-saved
+    # and the CPU will certainly need these values to continue
+    # again.
+    
+    # pushes all general purpose registers.
+    pusha
+
+    # save the data seg register
+    mov $0, %eax
+    mov %ds, %ax
+    push %eax
+
+    # load the kernel data segment's address (0x10)
+    mov $0x10, %eax
+    mov %ax, %ds
+    mov %ax, %es
+    mov %ax, %fs
+    mov %ax, %gs
+    
+    # call the C++ level main ISR
+    call isr_handler
+
+    # restore the original registers
+    pop %eax
+    mov %ax, %ds
+    mov %ax, %es
+    mov %ax, %fs
+    mov %ax, %gs
+
+    # restore the general purpose registers
+    popa
+
+    # clean up pushed error code and ISR number
+    add $8, %esp
+
+    # restore interrupt polling
+    sti
+
+    # return from interrupt routine
+    iret
+```
+
+
+
 ### How to use?
 To boot into the OS for testing, I use VirtualBox for a VM and grub-mkrescue to generate a bootable disk image from a given file structure.
 
