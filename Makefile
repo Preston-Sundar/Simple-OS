@@ -7,8 +7,10 @@ objects =	objects/loader.o 							\
 		  	objects/kernel_main.o 						\
 		  	objects/hardware/io.o 						\
 		  	objects/kernel/kernel_misc.o				\
-		  	objects/memory/set_table.o					\
-		 	objects/memory/descriptor_table.o			\
+		  	objects/descriptortables/set_table.o					\
+		  	objects/descriptortables/interrupts.o					\
+		  	objects/descriptortables/isr.o						\
+		 	objects/descriptortables/descriptor_table.o			\
 		  
 
 
@@ -16,11 +18,11 @@ objects/%.o: src/%.s
 	mkdir -p $(@D)
 	as $(AS_PARAMS) -o $@ $<
 
-objects/%.o: src/memory/%.s
+objects/%.o: src/descriptortables/%.s
 	mkdir -p $(@D)
 	as $(AS_PARAMS) -o $@ $<
 
-objects/%.o: src/memory/%.c
+objects/%.o: src/descriptortables/%.c
 	mkdir -p $(@D)
 	gcc $(C_FLAGS) $< -o $@
 
@@ -36,7 +38,7 @@ objects/%.o: src/kernel/%.cpp
 	mkdir -p $(@D)
 	gcc $(GPPPARAMS) -o $@ -c $<
 
-objects/%.o: src/memory/%.cpp
+objects/%.o: src/descriptortables/%.cpp
 	mkdir -p $(@D)
 	gcc $(GPPPARAMS) -o $@ -c $<
 

@@ -56,13 +56,19 @@ extern "C" void kernel_main(void *multiboot_struct, uint32_t magic_num)
 
     k_printf_skeleton_message("setting GDT", PRINT_STATE);
     
-    // create the GDT
+    // create the DT
     DescTable d;
 
     k_printf_skeleton_message("Done with GDT", PRINT_STATE);
 
+
+    k_printf_skeleton_message("forcing INT 3", PRINT_STATE);
+
     
     
+    asm volatile ("int $0x3");
+    asm volatile ("int $0x4");
+
 
     // infinite loop
     while (1)
