@@ -30,7 +30,7 @@ high-level descriptions for the processes occurring at each marked stage:
 3. From the CPU's perspective, after every instruction has been executed, it checks to see if the PIC's pin has notified an interrupt. It then saves the current process onto the stack and passes control to the OS.
 4. From the OS's perspective, an Interrupt Descriptor Table is set up in advance to execution and is used to jump to the correct interrupt handler. Once complete, an 'iret' instruction is issued to the CPU to resume original state.
 
-Shown below is assembly that models the behaviour state above, taken from `interrupts.s`:
+Shown below is assembly that models the behaviour stated above, taken from `interrupts.s`:
 ```asm
 # create a common interrupt handler
 # saves the processor state, sets the kernel mode segments,
